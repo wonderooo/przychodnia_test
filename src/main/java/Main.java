@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -6,20 +7,20 @@ public class Main {
         var pacjenci = Pacjent.readFileToList("src/files/pacjenci.txt");
         var lekarze = Lekarz.readFileToList("src/files/lekarze.txt");
         var wizyty = Wizyta.readFileToList("src/files/wizyty.txt", lekarze, pacjenci);
-        System.out.println("Znaleziono " + Color.RED + lekarzNajwiecejWizyt(wizyty).size() + Color.RESET + " lekarzy z najwieksza iloscia wizyt (" + Color.GREEN + lekarzNajwiecejWizyt(wizyty).get(0).getValue() + Color.RESET + "): ");
-        lekarzNajwiecejWizyt(wizyty).forEach(x -> System.out.println(x.getKey()));
+        System.out.println("Znaleziono " + Color.RED + genericNajwiecejWizyt(lekarze).size() + Color.RESET + " lekarzy z najwieksza iloscia wizyt: ");
+        genericNajwiecejWizyt(lekarze).forEach(System.out::println);
 
         System.out.println();
-        System.out.println("Znaleziono " + Color.RED + pacjentNajwiecejWizyt(wizyty).size() + Color.RESET + " pacjentow z najwieksza iloscia wizyt (" + Color.GREEN + pacjentNajwiecejWizyt(wizyty).get(0).getValue() + Color.RESET + "): ");
-        pacjentNajwiecejWizyt(wizyty).forEach(x -> System.out.println(x.getKey()));
+        System.out.println("Znaleziono " + Color.RED + genericNajwiecejWizyt(pacjenci).size() + Color.RESET + " pacjentow z najwieksza iloscia wizyt: ");
+        genericNajwiecejWizyt(pacjenci).forEach(System.out::println);
 
         System.out.println();
-        System.out.println("Znaleziono "+ Color.RED + specjalonscNajwiecej(wizyty).size() + Color.RESET + " specjalnosci z najwieksza iloscia wizyt (" + Color.GREEN + specjalonscNajwiecej(wizyty).get(0).getValue() + Color.RESET + "): ");
-        specjalonscNajwiecej(wizyty).forEach(x -> System.out.println(x.getKey()));
+        System.out.println("Znaleziono "+ Color.RED + specjalnoscNajwiecej(wizyty).size() + Color.RESET + " specjalnosci z najwieksza iloscia wizyt: ");
+        specjalnoscNajwiecej(wizyty).forEach(x -> System.out.println(x.getKey()));
 
         System.out.println();
-        System.out.println("Znaleziono " + Color.RED + rokNajwiecej(wizyty).size() + Color.RESET +" lat z najwieksza iloscia wizyt (" + Color.GREEN + rokNajwiecej(wizyty).get(0).getValue() + Color.RESET + "): ");
-        rokNajwiecej(wizyty).forEach(x -> System.out.println(x.getKey()));
+        System.out.println("Znaleziono "+ Color.RED + rokNajwiecejWizyt(wizyty).size() + Color.RESET + " lat z najwieksza iloscia wizyt: ");
+        rokNajwiecejWizyt(wizyty).forEach(x -> System.out.println(x.getKey()));
 
         System.out.println();
         System.out.println(Color.YELLOW + "TOP 5 NAJSTARSZYCH LEKARZY" + Color.RESET);
@@ -42,88 +43,23 @@ public class Main {
         }
     }
 
-    public static ArrayList<Map.Entry<Lekarz, Integer>> lekarzNajwiecejWizyt(ArrayList<Wizyta> wizyty) throws FirstElementNotFound {
-        var liczbaWizytLekarzy = new HashMap<Lekarz, Integer>();
-        for (Wizyta wizyta : wizyty){
-            if (liczbaWizytLekarzy.containsKey(wizyta.getLekarz())){
-                liczbaWizytLekarzy.replace(wizyta.getLekarz(), liczbaWizytLekarzy.get(wizyta.getLekarz()) + 1);
-            }else {
-                liczbaWizytLekarzy.put(wizyta.getLekarz(), 1);
-            }
-        }
-        ArrayList<Map.Entry<Lekarz, Integer>> lekarzNajwiecej = new ArrayList<>(List.of(liczbaWizytLekarzy.entrySet().stream().findFirst().orElseThrow(() -> new FirstElementNotFound("Nie znaleziono 1 elementu"))));
-        for (Map.Entry<Lekarz, Integer> liczbaWizytLekarza : liczbaWizytLekarzy.entrySet()){
-             if (liczbaWizytLekarza.getValue() > lekarzNajwiecej.get(0).getValue()){
-                 lekarzNajwiecej.clear();
-                 lekarzNajwiecej.add(liczbaWizytLekarza);
-             }else if (liczbaWizytLekarza.getValue().equals(lekarzNajwiecej.get(0).getValue())){
-                 lekarzNajwiecej.add(liczbaWizytLekarza);
-             }
-        }
-        return lekarzNajwiecej;
+    public static <U extends Najwiecej> List<U> genericNajwiecejWizyt(ArrayList<U> osoba) {
+        osoba.sort(Comparator.comparingInt(o -> -(o.getWizyty().size())));
+        return osoba.stream().filter(x -> x.getWizyty().size() == osoba.get(0).getWizyty().size()).collect(Collectors.toList());
     }
 
-    public static ArrayList<Map.Entry<Pacjent, Integer>> pacjentNajwiecejWizyt(ArrayList<Wizyta> wizyty) throws FirstElementNotFound {
-        var liczbaWizytPacjentow = new HashMap<Pacjent, Integer>();
-        for (Wizyta wizyta : wizyty){
-            if (liczbaWizytPacjentow.containsKey(wizyta.getPacjent())){
-                liczbaWizytPacjentow.replace(wizyta.getPacjent(), liczbaWizytPacjentow.get(wizyta.getPacjent()) + 1);
-            }else {
-                liczbaWizytPacjentow.put(wizyta.getPacjent(), 1);
-            }
-        }
-        ArrayList<Map.Entry<Pacjent, Integer>> pacjentNajwiecej = new ArrayList<>(List.of(liczbaWizytPacjentow.entrySet().stream().findFirst().orElseThrow(() -> new FirstElementNotFound("Nie znaleziono 1 elementu"))));
-        for (Map.Entry<Pacjent, Integer> liczbaWizytPacjenta : liczbaWizytPacjentow.entrySet()){
-            if (liczbaWizytPacjenta.getValue() > pacjentNajwiecej.get(0).getValue()){
-                pacjentNajwiecej.clear();
-                pacjentNajwiecej.add(liczbaWizytPacjenta);
-            }else if (liczbaWizytPacjenta.getValue().equals(pacjentNajwiecej.get(0).getValue())){
-                pacjentNajwiecej.add(liczbaWizytPacjenta);
-            }
-        }
-        return pacjentNajwiecej;
+    public static List<Map.Entry<Integer, List<Wizyta>>> rokNajwiecejWizyt(ArrayList<Wizyta> wizyty) {
+        Map<Integer, List<Wizyta>> zgrupowaneRocznie = wizyty.stream().collect(Collectors.groupingBy(Wizyta::getYearWizyty));
+        List<Map.Entry<Integer, List<Wizyta>>> listaMapy = new ArrayList<>(zgrupowaneRocznie.entrySet());
+        listaMapy.sort(Comparator.comparingInt(o -> -(o.getValue().size())));
+        return listaMapy.stream().filter(x -> x.getValue().size() == listaMapy.get(0).getValue().size()).collect(Collectors.toList());
     }
 
-    public static ArrayList<Map.Entry<Specjalnosc, Integer>> specjalonscNajwiecej(ArrayList<Wizyta> wizyty) throws FirstElementNotFound {
-        var liczbaSpecjalnosci = new HashMap<Specjalnosc, Integer>();
-        for (Wizyta wizyta : wizyty){
-            if (liczbaSpecjalnosci.containsKey(wizyta.getLekarz().getSpecjalnosc())){
-                liczbaSpecjalnosci.replace(wizyta.getLekarz().getSpecjalnosc(), liczbaSpecjalnosci.get(wizyta.getLekarz().getSpecjalnosc()) + 1);
-            }else {
-                liczbaSpecjalnosci.put(wizyta.getLekarz().getSpecjalnosc(), 1);
-            }
-        }
-        ArrayList<Map.Entry<Specjalnosc, Integer>> specjalnoscNajwiecej = new ArrayList<>(List.of(liczbaSpecjalnosci.entrySet().stream().findFirst().orElseThrow(() -> new FirstElementNotFound("Nie znaleziono 1 elementu"))));
-        for (Map.Entry<Specjalnosc, Integer> liczbaSpecjalnosciPoj : liczbaSpecjalnosci.entrySet()){
-            if (liczbaSpecjalnosciPoj.getValue() > specjalnoscNajwiecej.get(0).getValue()){
-                specjalnoscNajwiecej.clear();
-                specjalnoscNajwiecej.add(liczbaSpecjalnosciPoj);
-            } else if (liczbaSpecjalnosciPoj.getValue().equals(specjalnoscNajwiecej.get(0).getValue())){
-                specjalnoscNajwiecej.add(liczbaSpecjalnosciPoj);
-            }
-        }
-        return specjalnoscNajwiecej;
-    }
-
-    public static ArrayList<Map.Entry<Integer, Integer>> rokNajwiecej(ArrayList<Wizyta> wizyty) throws FirstElementNotFound {
-        var liczbaNaDanyRok = new HashMap<Integer, Integer>();
-        for (Wizyta wizyta : wizyty){
-            if (liczbaNaDanyRok.containsKey(wizyta.getDataWizyty().getYear())){
-                liczbaNaDanyRok.replace(wizyta.getDataWizyty().getYear(), liczbaNaDanyRok.get(wizyta.getDataWizyty().getYear()) + 1 );
-            }else {
-                liczbaNaDanyRok.put(wizyta.getDataWizyty().getYear(), 1);
-            }
-        }
-        ArrayList<Map.Entry<Integer, Integer>> rokNajwiecej = new ArrayList<>(List.of(liczbaNaDanyRok.entrySet().stream().findFirst().orElseThrow(() -> new FirstElementNotFound("Nie znaleziono 1 elementu"))));
-        for (Map.Entry<Integer, Integer> liczbaNaDanyRokPoj : liczbaNaDanyRok.entrySet()){
-            if (liczbaNaDanyRokPoj.getValue() > rokNajwiecej.get(0).getValue()){
-                rokNajwiecej.clear();
-                rokNajwiecej.add(liczbaNaDanyRokPoj);
-            } else if (liczbaNaDanyRokPoj.getValue().equals(rokNajwiecej.get(0).getValue())){
-                rokNajwiecej.add(liczbaNaDanyRokPoj);
-            }
-        }
-        return rokNajwiecej;
+    public static List<Map.Entry<Specjalnosc, List<Wizyta>>> specjalnoscNajwiecej(ArrayList<Wizyta> wizyty) {
+        Map<Specjalnosc, List<Wizyta>> zgrupowaneRocznie = wizyty.stream().collect(Collectors.groupingBy(Wizyta::getSpecjalnosc));
+        List<Map.Entry<Specjalnosc, List<Wizyta>>> listaMapy = new ArrayList<>(zgrupowaneRocznie.entrySet());
+        listaMapy.sort(Comparator.comparingInt(o -> -(o.getValue().size())));
+        return listaMapy.stream().filter(x -> x.getValue().size() == listaMapy.get(0).getValue().size()).collect(Collectors.toList());
     }
 
     public static Lekarz[] top5NajstarszychLekarzy(ArrayList<Lekarz> lekarze){

@@ -10,10 +10,12 @@ public class Wizyta {
     private Pacjent pacjent;
     private LocalDate dataWizyty;
 
-    public Wizyta(Lekarz lekarz, Pacjent pacjent, LocalDate dataWizyty) {
+    public Wizyta(Lekarz lekarz, Pacjent pacjent, LocalDate dataWizyty) throws Exception {
         this.lekarz = lekarz;
         this.pacjent = pacjent;
         this.dataWizyty = dataWizyty;
+        lekarz.setWizyty(this);
+        pacjent.setWizyty(this);
     }
 
     public static ArrayList<Wizyta> readFileToList(String path, ArrayList<Lekarz> lekarze, ArrayList<Pacjent> pacjenci) throws FileNotFoundException {
@@ -32,7 +34,7 @@ public class Wizyta {
             String dateRes = date[0] + "-" + date[1] + "-" + date[2];
             try {
                 wizyty.add(new Wizyta(Lekarz.getLekarzById(lekarze ,Integer.parseInt(params[0])), Pacjent.getPacjentById(pacjenci ,Integer.parseInt(params[1])), LocalDate.parse(dateRes)));
-            } catch (LekarzWithIdNotFound | PacjentWithIdNotFound e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -46,6 +48,10 @@ public class Wizyta {
 
     public Lekarz getLekarz() {
         return lekarz;
+    }
+
+    public Specjalnosc getSpecjalnosc(){
+        return lekarz.getSpecjalnosc();
     }
 
     public void setLekarz(Lekarz lekarz) {
@@ -62,6 +68,10 @@ public class Wizyta {
 
     public LocalDate getDataWizyty() {
         return dataWizyty;
+    }
+
+    public Integer getYearWizyty(){
+        return dataWizyty.getYear();
     }
 
     public void setDataWizyty(LocalDate dataWizyty) {

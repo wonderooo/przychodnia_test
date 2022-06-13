@@ -38,8 +38,8 @@ class LekarzTest {
         assertEquals(lekarz.getDaneOsobiste().getId(), 23);
         assertEquals(lekarz.getDaneOsobiste().getName(), "Monika");
         assertEquals(lekarz.getDaneOsobiste().getLastname(), "Kadaj");
-        assertEquals(lekarz.getDaneOsobiste().getPESEL(), "65031687654");
+        assertEquals(lekarz.getDaneOsobiste().getPesel(), "65031687654");
         assertEquals(lekarz.getSpecjalnosc(), Specjalnosc.LARYNGOLOG);
-        assertEquals(lekarz.getNIP(), "879-122-69-94");
+        assertEquals(lekarz.getNip(), "879-122-69-94");
     }
 }

@@ -24,6 +24,6 @@ class PacjentTest {
         assertEquals(pacjent.getDaneOsobiste().getId(), 100);
         assertEquals(pacjent.getDaneOsobiste().getName(), "Waldemar");
         assertEquals(pacjent.getDaneOsobiste().getLastname(), "Kowal");
-        assertEquals(pacjent.getDaneOsobiste().getPESEL(), "01211309876");
+        assertEquals(pacjent.getDaneOsobiste().getPesel(), "01211309876");
     }
 }

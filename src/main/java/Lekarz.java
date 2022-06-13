@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 enum Specjalnosc {
@@ -36,27 +35,40 @@ enum Specjalnosc {
     }
 }
 
-public class Lekarz implements Comparable<Lekarz> {
+public class Lekarz extends Najwiecej implements Comparable<Lekarz> {
     private DaneOsobiste daneOsobiste;
     private Specjalnosc specjalnosc;
-    private String NIP;
+    private String nip;
+    private ArrayList<Wizyta> wizyty = new ArrayList<>();
 
-    public Lekarz(DaneOsobiste daneOsobiste, Specjalnosc specjalnosc, String NIP) throws IncorrectNipFormat {
+    public Lekarz(DaneOsobiste daneOsobiste, Specjalnosc specjalnosc, String nip) throws IncorrectNipFormat {
         this.daneOsobiste = daneOsobiste;
         this.specjalnosc = specjalnosc;
-        setNIP(NIP);
+        setNip(nip);
     }
 
-    public String getNIP() {
-        return NIP;
+    public void setWizyty(Wizyta wizyta) throws Exception {
+        if (!wizyty.contains(wizyta)){
+            wizyty.add(wizyta);
+        }else {
+            throw new Exception(this + " juz posiada ta wizyte " + wizyta);
+        }
     }
 
-    public void setNIP(String NIP) throws IncorrectNipFormat {
-        Pattern NipPattern = Pattern.compile("\\d{3}-\\d{3}-\\d{2}-\\d{2}");
-        if (NipPattern.matcher(NIP).matches()) {
-            this.NIP = NIP;
+    @Override
+    public ArrayList<Wizyta> getWizyty(){
+        return wizyty;
+    }
+
+    public String getNip() {
+        return nip;
+    }
+
+    public void setNip(String nip) throws IncorrectNipFormat {
+        if (nip.matches("\\d{3}-\\d{3}-\\d{2}-\\d{2}")) {
+            this.nip = nip;
         } else {
-            throw new IncorrectNipFormat("NIP: " + NIP + ", powinnien miec format 10 cyrf xxx-xxx-xx-xx");
+            throw new IncorrectNipFormat("NIP: " + nip + ", powinnien miec format 10 cyrf xxx-xxx-xx-xx");
         }
     }
 
@@ -93,8 +105,8 @@ public class Lekarz implements Comparable<Lekarz> {
             try {
                 Lekarz lekarz = new Lekarz(new DaneOsobiste(Integer.parseInt(params[0]), params[2], params[1], params[6], LocalDate.parse(dateRes)), Specjalnosc.get(params[3]).orElseThrow(() -> new SpecjalnoscNotFound("Nie znaleziono specjalnosci " + params[3])), params[5]);
                 for (Lekarz l : lekarze) {
-                    if (l.getDaneOsobiste().getId() == lekarz.getDaneOsobiste().getId() || l.getDaneOsobiste().getPESEL().equals(lekarz.getDaneOsobiste().getPESEL())){
-                        throw new LekarzWithUniqueParameterExists("Lekarz z id i PESEL: " + lekarz.getDaneOsobiste().getId() + ", " + lekarz.getDaneOsobiste().getPESEL() + " juz istnieje");
+                    if (l.getDaneOsobiste().getId() == lekarz.getDaneOsobiste().getId() || l.getDaneOsobiste().getPesel().equals(lekarz.getDaneOsobiste().getPesel())){
+                        throw new LekarzWithUniqueParameterExists("Lekarz z id i PESEL: " + lekarz.getDaneOsobiste().getId() + ", " + lekarz.getDaneOsobiste().getPesel() + " juz istnieje");
                     }
                 }
                 lekarze.add(lekarz);
@@ -116,7 +128,7 @@ public class Lekarz implements Comparable<Lekarz> {
 
     @Override
     public String toString(){
-        return Color.GREEN + "LEKARZ" + Color.RESET + ": specjalnosc: " + specjalnosc + " NIP: " + NIP + " dane: " + daneOsobiste;
+        return Color.GREEN + "LEKARZ" + Color.RESET + ": specjalnosc: " + specjalnosc + " NIP: " + nip + " dane: " + daneOsobiste;
     }
 
     @Override

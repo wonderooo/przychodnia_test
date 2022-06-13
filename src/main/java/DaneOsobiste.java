@@ -1,18 +1,17 @@
 import java.time.LocalDate;
-import java.util.regex.Pattern;
 
 public class DaneOsobiste {
     private int id;
     private String name;
     private String lastname;
-    private String PESEL;
+    private String pesel;
     private LocalDate dateOfBirth;
 
-    public DaneOsobiste(int id, String name, String lastname, String PESEL, LocalDate dateOfBirth) throws IncorrectPeselFormat {
+    public DaneOsobiste(int id, String name, String lastname, String pesel, LocalDate dateOfBirth) throws IncorrectPeselFormat {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
-        setPESEL(PESEL);
+        setPesel(pesel);
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -24,16 +23,15 @@ public class DaneOsobiste {
         this.id = id;
     }
 
-    public String getPESEL() {
-        return PESEL;
+    public String getPesel() {
+        return pesel;
     }
 
-    public void setPESEL(String PESEL) throws IncorrectPeselFormat {
-        Pattern PeselPattern = Pattern.compile("\\d{11}");
-        if (PeselPattern.matcher(PESEL).matches()) {
-            this.PESEL = PESEL;
+    public void setPesel(String pesel) throws IncorrectPeselFormat {
+        if (pesel.matches("\\d{11}")) {
+            this.pesel = pesel;
         }else {
-            throw new IncorrectPeselFormat("PESEL: " + PESEL + ", powinnien miec format 11 cyfr");
+            throw new IncorrectPeselFormat("PESEL: " + pesel + ", powinnien miec format 11 cyfr");
         }
     }
 
@@ -63,7 +61,7 @@ public class DaneOsobiste {
 
     @Override
     public String toString(){
-        return "id: " + id + " imie: " + name + " nazwisko: " + lastname + " data urodzenia: " + dateOfBirth + " PESEL: " + PESEL;
+        return "id: " + id + " imie: " + name + " nazwisko: " + lastname + " data urodzenia: " + dateOfBirth + " PESEL: " + pesel;
     }
 }
 

@@ -27,7 +27,7 @@ class MainTest {
     }
 
     @Test
-    void pacjent5RoznychLekarzyOK() throws IncorrectPeselFormat, IncorrectNipFormat {
+    void pacjent5RoznychLekarzyOK() throws Exception {
         var lekarze = new ArrayList<>(List.of(new Lekarz[]{
                         new Lekarz(new DaneOsobiste(1, "test1", "testn1", "12345678910", LocalDate.parse("2005-01-03")), Specjalnosc.LARYNGOLOG, "123-123-12-12"),
                         new Lekarz(new DaneOsobiste(2, "test1", "testn1", "12345678911", LocalDate.parse("2006-05-13")), Specjalnosc.LARYNGOLOG, "123-123-12-12"),
@@ -61,7 +61,7 @@ class MainTest {
     }
 
     @Test
-    void lekarzTylko1PacjentOK() throws IncorrectPeselFormat, IncorrectNipFormat {
+    void lekarzTylko1PacjentOK() throws Exception {
         var lekarze = new ArrayList<>(List.of(new Lekarz[]{
                         new Lekarz(new DaneOsobiste(1, "test1", "testn1", "12345678910", LocalDate.parse("2005-01-03")), Specjalnosc.LARYNGOLOG, "123-123-12-12"),
                 }
@@ -89,7 +89,7 @@ class MainTest {
     }
 
     @Test
-    void najwiecejRocznieOK() throws IncorrectPeselFormat, IncorrectNipFormat, FirstElementNotFound {
+    void najwiecejRocznieOK() throws Exception {
         var lekarze = new ArrayList<>(List.of(new Lekarz[]{
                         new Lekarz(new DaneOsobiste(1, "test1", "testn1", "12345678910", LocalDate.parse("2005-01-03")), Specjalnosc.LARYNGOLOG, "123-123-12-12"),
                 }
@@ -108,13 +108,12 @@ class MainTest {
                 }
         ));
         var wizyty2 = new ArrayList<Wizyta>();
-        assertEquals(Main.rokNajwiecej(wizyty1).get(0).getKey(), 1999);
-        assertEquals(Main.rokNajwiecej(wizyty1).get(0).getValue(), 4);
-        assertThrows(FirstElementNotFound.class, () -> Main.rokNajwiecej(wizyty2));
+        assertEquals(Main.rokNajwiecejWizyt(wizyty1).get(0).getKey(), 1999);
+        assertEquals(Main.rokNajwiecejWizyt(wizyty1).get(0).getValue().size(), 4);
     }
 
     @Test
-    void specjalnoscNajwiecejOK() throws IncorrectPeselFormat, IncorrectNipFormat, FirstElementNotFound {
+    void specjalnoscNajwiecejOK() throws Exception {
         var lekarze = new ArrayList<>(List.of(new Lekarz[]{
                         new Lekarz(new DaneOsobiste(1, "test1", "testn1", "12345678910", LocalDate.parse("2005-01-03")), Specjalnosc.LARYNGOLOG, "123-123-12-12"),
                         new Lekarz(new DaneOsobiste(2, "test1", "testn1", "12345678911", LocalDate.parse("2005-01-03")), Specjalnosc.UROLOG, "123-123-12-12"),
@@ -134,13 +133,12 @@ class MainTest {
                 }
         ));
         var wizyty2 = new ArrayList<Wizyta>();
-        assertEquals(Main.specjalonscNajwiecej(wizyty1).get(0).getKey(), Specjalnosc.LARYNGOLOG);
-        assertEquals(Main.specjalonscNajwiecej(wizyty1).get(0).getValue(), 4);
-        assertThrows(FirstElementNotFound.class, () -> Main.rokNajwiecej(wizyty2));
+        assertEquals(Main.specjalnoscNajwiecej(wizyty1).get(0).getKey(), Specjalnosc.LARYNGOLOG);
+        assertEquals(Main.specjalnoscNajwiecej(wizyty1).get(0).getValue().size(), 4);
     }
 
     @Test
-    void pacjentNajwiecejWizytOK() throws IncorrectPeselFormat, IncorrectNipFormat, FirstElementNotFound {
+    void pacjentNajwiecejWizytOK() throws Exception {
         var lekarze = new ArrayList<>(List.of(new Lekarz[]{
                         new Lekarz(new DaneOsobiste(1, "test1", "testn1", "12345678910", LocalDate.parse("2005-01-03")), Specjalnosc.LARYNGOLOG, "123-123-12-12"),
                 }
@@ -163,13 +161,11 @@ class MainTest {
                 }
         ));
         var wizyty2 = new ArrayList<Wizyta>();
-        assertEquals(Main.pacjentNajwiecejWizyt(wizyty1).get(0).getKey().getDaneOsobiste().getId(), 1);
-        assertEquals(Main.pacjentNajwiecejWizyt(wizyty1).get(0).getValue(), 3);
-        assertThrows(FirstElementNotFound.class, () -> Main.rokNajwiecej(wizyty2));
+        assertEquals(Main.genericNajwiecejWizyt(pacjenci).get(0).getDaneOsobiste().getId(), 1);
     }
 
     @Test
-    void lekarzNajwiecejWizytOK() throws IncorrectPeselFormat, IncorrectNipFormat, FirstElementNotFound {
+    void lekarzNajwiecejWizytOK() throws Exception {
         var lekarze = new ArrayList<>(List.of(new Lekarz[]{
                         new Lekarz(new DaneOsobiste(1, "test1", "testn1", "12345678910", LocalDate.parse("2005-01-03")), Specjalnosc.LARYNGOLOG, "123-123-12-12"),
                         new Lekarz(new DaneOsobiste(2, "test1", "testn1", "12345678911", LocalDate.parse("2005-01-03")), Specjalnosc.UROLOG, "123-123-12-12"),
@@ -190,8 +186,6 @@ class MainTest {
                 }
         ));
         var wizyty2 = new ArrayList<Wizyta>();
-        assertEquals(Main.lekarzNajwiecejWizyt(wizyty1).get(0).getKey().getDaneOsobiste().getId(), 1);
-        assertEquals(Main.lekarzNajwiecejWizyt(wizyty1).get(0).getValue(), 4);
-        assertThrows(FirstElementNotFound.class, () -> Main.rokNajwiecej(wizyty2));
+        assertEquals(Main.genericNajwiecejWizyt(lekarze).get(0).getDaneOsobiste().getId(), 1);
     }
 }

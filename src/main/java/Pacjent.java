@@ -5,8 +5,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-public class Pacjent {
+public class Pacjent extends Najwiecej{
     private DaneOsobiste daneOsobiste;
+    private ArrayList<Wizyta> wizyty = new ArrayList<>();
 
     public Pacjent(DaneOsobiste daneOsobiste) {
         this.daneOsobiste = daneOsobiste;
@@ -18,6 +19,19 @@ public class Pacjent {
 
     public void setDaneOsobiste(DaneOsobiste daneOsobiste) {
         this.daneOsobiste = daneOsobiste;
+    }
+
+    @Override
+    public ArrayList<Wizyta> getWizyty(){
+        return wizyty;
+    }
+
+    public void setWizyty(Wizyta wizyta) throws Exception {
+        if (!wizyty.contains(wizyta)){
+            wizyty.add(wizyta);
+        }else {
+            throw new Exception(this + " posiada juz ta wizyte " + wizyta);
+        }
     }
 
     public static ArrayList<Pacjent> readFileToList(String path) throws FileNotFoundException{
@@ -37,8 +51,8 @@ public class Pacjent {
             try {
                 Pacjent pacjent = new Pacjent(new DaneOsobiste(Integer.parseInt(params[0]), params[2], params[1], params[3], LocalDate.parse(dateRes)));
                 for (Pacjent p : pacjenci) {
-                    if (p.getDaneOsobiste().getId() == pacjent.getDaneOsobiste().getId() || p.getDaneOsobiste().getPESEL().equals(pacjent.getDaneOsobiste().getPESEL())){
-                        throw new PacjentWithUniqueParametersExists("Pacjent z id i Pesel " + pacjent.getDaneOsobiste().getId() + " " + pacjent.getDaneOsobiste().getPESEL() + " juz istnieje");
+                    if (p.getDaneOsobiste().getId() == pacjent.getDaneOsobiste().getId() || p.getDaneOsobiste().getPesel().equals(pacjent.getDaneOsobiste().getPesel())){
+                        throw new PacjentWithUniqueParametersExists("Pacjent z id i Pesel " + pacjent.getDaneOsobiste().getId() + " " + pacjent.getDaneOsobiste().getPesel() + " juz istnieje");
                     }
                 }
                 pacjenci.add(pacjent);
