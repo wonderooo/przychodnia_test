@@ -18,7 +18,7 @@ public class Main {
         specjalonscNajwiecej(wizyty).forEach(x -> System.out.println(x.getKey()));
 
         System.out.println();
-        System.out.println("Znaleziono " + Color.RED + specjalonscNajwiecej(wizyty).size() + Color.RESET +" lat z najwieksza iloscia wizyt (" + Color.GREEN + pacjentNajwiecejWizyt(wizyty).get(0).getValue() + Color.RESET + "): ");
+        System.out.println("Znaleziono " + Color.RED + rokNajwiecej(wizyty).size() + Color.RESET +" lat z najwieksza iloscia wizyt (" + Color.GREEN + rokNajwiecej(wizyty).get(0).getValue() + Color.RESET + "): ");
         rokNajwiecej(wizyty).forEach(x -> System.out.println(x.getKey()));
 
         System.out.println();
